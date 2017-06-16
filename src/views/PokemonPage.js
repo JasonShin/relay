@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import PokemonCard from '../components/PokemonCard'
 import CreatePokemonMutation from '../mutations/CreatePokemonMutation'
 import DeletePokemonMutation from '../mutations/DeletePokemonMutation'
+import UpdatePokemonMutation from '../mutations/UpdatePokemonMutation'
 import deleteIcon from '../assets/delete.svg'
 import classes from './PokemonPage.css'
 
@@ -39,7 +40,6 @@ class PokemonPage extends React.Component {
       },
     )
   }
-
   _deletePokemon = () => {
     Relay.Store.commitUpdate(
       new DeletePokemonMutation({pokemonId: this.props.params.id, viewerId: this.props.viewer.id}),
@@ -49,7 +49,17 @@ class PokemonPage extends React.Component {
       },
     )
   }
-
+  _updatePokemon = () => {
+    Relay.Store.commitUpdate(
+      new UpdatePokemonMutation({
+        pokemon: this.props.params.id, name: this.state.name, url: this.state.url, viewer: this.props.viewer,
+      }),
+      {
+        onSuccess: () => this.context.router.push('/'),
+        onFailure: (transaction) => console.log(transaction),
+      },
+    )
+  }
   render () {
     return (
       <div className={classes.root}>
@@ -73,7 +83,7 @@ class PokemonPage extends React.Component {
               </Link>
               <div
                 className={classes.button + ' ' + classes.saveButton}
-                onClick={this._addPokemon}
+                onClick={this._isAddNew() ? this._addPokemon : this._updatePokemon}
               >
                 {this._isAddNew() ? 'Add' : 'Save'}
               </div>
