@@ -45,18 +45,20 @@ class PokemonPage extends React.Component {
       new DeletePokemonMutation({pokemonId: this.props.params.id, viewerId: this.props.viewer.id}),
       {
         onSuccess: () => this.context.router.replace('/'),
-        onFailure: (transaction) => console.log(transaction),
+        onFailure: (transaction) => console.error(transaction),
       },
     )
   }
   _updatePokemon = () => {
-    Relay.Store.commitUpdate(
+    Relay.Store.update(
       new UpdatePokemonMutation({
-        pokemon: this.props.params.id, name: this.state.name, url: this.state.url, viewer: this.props.viewer,
+        id: this.props.params.id,
+        name: this.state.name,
+        url: this.state.url,
       }),
       {
         onSuccess: () => this.context.router.push('/'),
-        onFailure: (transaction) => console.log(transaction),
+        onFailure: (transaction) => console.error(transaction),
       },
     )
   }
@@ -114,7 +116,6 @@ export default Relay.createContainer(
             id
             name
             url
-
           }
         }
       `,

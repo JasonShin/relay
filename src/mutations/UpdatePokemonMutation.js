@@ -2,34 +2,32 @@ import Relay from 'react-relay'
 
 export default class UpdatePokemonMutation extends Relay.Mutation {
   getMutation () {
-    return Relay.QL`mutation{updatePokemon}`
+    return Relay.QL`mutation {updatePokemon}`
   }
   getFatQuery () {
     return Relay.QL`
     fragment on UpdatePokemonPayload {
-      viewer
-      pokemon
+      pokemon {
+        id
+        name
+        url
+      }
     }
     `
   }
   getConfigs () {
-    console.log('name : ', this.props.name)
-    console.log('url: ', this.props.url)
     return [
       {
         type: 'FIELDS_CHANGE',
         fieldIDs: {
-          pokemon: {
-            id: this.props.pokemon,
-            name: this.props.name,
-            url: this.props.url,
-          },
+          pokemon: this.props.id,
         },
       },
     ]
   }
   getVariables () {
     return {
+      id: this.props.id,
       name: this.props.name,
       url: this.props.url,
     }
